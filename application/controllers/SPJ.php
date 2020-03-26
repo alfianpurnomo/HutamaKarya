@@ -484,7 +484,7 @@ class SPJ extends CI_Controller
             'jenis_spj'=>($post['jenis_perjalanan_dinas']=='daily_money') ? 'Dinas' : 'Diklat'
         ];
         $listFollower = $post['listFollower'];
-        if(count($listFollower) > 0){
+        if($listFollower){
             
             foreach ($listFollower as $k => $follower) {
                 $check_kriteria_follower     = $this->checkFrequensiSPJ($follower['employeeid'],$start_date,$end_date);
