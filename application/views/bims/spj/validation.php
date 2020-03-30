@@ -208,19 +208,7 @@
                                         </div>
                                     </div>
                                     <div class="footer_document">
-                                        <!-- <div class="row_item">
-                                            <div class="message_action"></div>
-                                        </div>
-                                        <div class="row_item">
-                                            <div class="title_item">Status Dokumen</div>
-                                            <div class="value_item">
-                                                : &nbsp; <?php echo $detailSPJ['status']; ?>
-                                            </div>
-                                        </div>
-                                        <div class="row_item" style="display: inherit;">
-                                            <a data-id_spj_online="<?php echo $detailSPJ['id_spj_online']; ?>" data-status="APPROVED" class="changeStatus btn btn-success">APPROVE</a>
-                                            <a data-id_spj_online="<?php echo $detailSPJ['id_spj_online']; ?>" data-status="REJECTED" class="changeStatus btn btn-danger">REJECT</a>
-                                        </div> -->
+                                        
                                     </div>
                                  </div>
                             </div>
@@ -243,8 +231,23 @@
                                 </div>
                             </div>
                             <div class="row_item" style="display: inherit;">
+                                <?php
+                                    if((is_superadmin() || id_auth_group()==2) && $detailSPJ['status']=="REQUESTED"){
+
+                                    
+                                ?>
                                 <a data-id_spj_online="<?php echo $detailSPJ['id_spj_online']; ?>" data-status="APPROVED" class="changeStatus btn btn-success">APPROVE</a>
                                 <a data-id_spj_online="<?php echo $detailSPJ['id_spj_online']; ?>" data-status="REJECTED" class="changeStatus btn btn-danger">REJECT</a>
+                                <?php
+                                    }
+                                ?>
+                                <?php
+                                    if($detailSPJ['status']=="APPROVED"){
+                                ?>
+                                    <a href="<?php echo site_url('/spj/print_document/'.$detailSPJ['id_spj_online'])?>"  class="btn btn-success">PRINT</a>
+                                <?php
+                                    }
+                                ?>
                             </div>
                         </div>
                     </div>

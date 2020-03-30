@@ -22,6 +22,7 @@
                             <th data-name="grade">Employee Grade</th>
                             <th data-name="division_name">Division</th>
                             <th data-name="head_of_division_name">Head of Division</th>
+                            <th data-name="status">Status</th>
                             
                         </tr>
                     </thead>

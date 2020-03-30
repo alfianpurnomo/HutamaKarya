@@ -75,14 +75,19 @@ class SPJ extends CI_Controller
             $return['recordsFiltered'] = $count_filtered_records;
             $return['data']            = [];
             foreach ($records as $row => $record) {
+                $action = '';
+                if(is_superadmin() || id_auth_group()==2){
+                    $action = '<a href="'.site_url($this->class_path_name.'/validation/'.$record['id']).'" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
+                }
                 $return['data'][$row]['DT_RowId']    = $record['id'];
-                $return['data'][$row]['actions']     = '<a href="'.site_url($this->class_path_name.'/validation/'.$record['id']).'" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
+                $return['data'][$row]['actions']     = $action;
                 $return['data'][$row]['spj_doc_no']                     = $record['spj_doc_no'];
                 $return['data'][$row]['employee_requested']             = $record['employee_requested'];
                 $return['data'][$row]['jobs_name']                      = $record['jobs_name'];
                 $return['data'][$row]['grade']                          = $record['grade'];
                 $return['data'][$row]['division_name']                  = $record['division_name'];
                 $return['data'][$row]['head_of_division_name']          = $record['head_of_division_name'];
+                $return['data'][$row]['status']          = $record['status'];
                 
             }
             json_exit($return);
@@ -119,6 +124,8 @@ class SPJ extends CI_Controller
                     'start_date'=>$post['start_date'],
                     'end_date'=>$post['end_date'],
                     'vehicle'=>$post['vehicle'],
+                    'jenis_pengurusan'=>$post['jenis_pengurusan'],
+                    'jenis_spj'=>($post['jenis_perjalanan_dinas']=='daily_money') ? 'Dinas' : 'Diklat',
                     'status'=>'REQUESTED',
                     'id_auth_user'=>$id_auth_user
 
@@ -255,6 +262,7 @@ class SPJ extends CI_Controller
                         $data[$key]['id'] = $value['id_master_destination'];
                         $data[$key]['text'] = $value['sub_regional'].' - '.$value['regional'];
                         $data[$key]['province'] = $value['province'];
+                        $data[$key]['regional'] = $value['regional'];
                     }
                 }
             //}
@@ -384,12 +392,29 @@ class SPJ extends CI_Controller
         
     }
 
-    private function getDailyMoney($destination,$jenis){
-        $data = $this->db
+    private function getDailyMoney($destination,$jenis,$regional,$id_group_grade='',$pengurusan){
+        //echo $regional;
+        if($regional=="Luar Negeri"){
+            $data = $this->db
+                ->where('sub_regional',$destination)
+                ->where('id_master_group_golongan',$id_group_grade)
+                ->get('view_master_destination_luar_negeri')->row_array();
+                //echo $this->db->last_query();
+            $result = $data['amount'];
+            if($pengurusan == "Kantor"){
+                
+                $result = round(($data['amount'] * 0.3),PHP_ROUND_HALF_UP);
+            }
+            
+        }else{
+            $data = $this->db
                 ->where('sub_regional',$destination)
                 ->get('master_destination')->row_array();
+            $result = $data[$jenis];
+        }
+        
         #echo $this->db->last_query();
-        return $data[$jenis];
+        return (float)$result;
     }
 
     private function generateSPJDocNumber($division_name,$start_date){
@@ -437,7 +462,7 @@ class SPJ extends CI_Controller
         return $amount;
     }
 
-    private function getVehicleCost($vehicle,$province){
+    private function getVehicleCost($vehicle,$province,$regional){
         //echo $vehicle;
         if($vehicle=='Pesawat' || $vehicle=='Kereta'){
             if($provice=='DKI JAKARTA'){
@@ -458,11 +483,11 @@ class SPJ extends CI_Controller
 
         $check_kriteria_requester     = $this->checkFrequensiSPJ($employeeid,$start_date,$end_date);
         $reprentasi_money_requester   = $this->getRepresentasiMoney($post['id_group_grade'],$check_kriteria_requester['kriteria']);
-        $daily_money_requester        = $this->getDailyMoney($post['destination_name'],$post['jenis_perjalanan_dinas']);
+        $daily_money_requester        = $this->getDailyMoney($post['destination_name'],$post['jenis_perjalanan_dinas'],$post['regional'],$post['id_group_grade'],$post['pengurusan']);
         $getHeadofDivisionName        = $this->db->where('division_name','EPC')->get('view_master_division')->row_array();
         $spj_doc_number               = $this->generateSPJDocNumber($post['division_name'],$start_date);
         $get_hotel_cost               = $this->getHotelCost($post['id_group_grade'],$post['province']);
-        $get_vehicle_cost             = $this->getVehicleCost($post['vehicle'],$post['province']);
+        $get_vehicle_cost             = $this->getVehicleCost($post['vehicle'],$post['province'],$post['regional']);
         //echo $get_vehicle_cost;
         $data_requester[] = [
             'employeeid'=>$post['employeeid'],
@@ -471,25 +496,25 @@ class SPJ extends CI_Controller
             'head_of_division_id'=>$getHeadofDivisionName['head_of_division'],
             'destination_name'=>$post['destination_name'],
             'days'=>$check_kriteria_requester['days'],
-            'reprentasi_money'=>$reprentasi_money_requester,
+            'reprentasi_money'=>$post['regional']=="Dalam Negri" ? $reprentasi_money_requester : 0 ,
             'daily_money'=>$daily_money_requester,
-            'hotel_cost'=>$get_hotel_cost,
+            'hotel_cost'=>$post['regional']=="Dalam Negri" ? $get_hotel_cost : 0,
             'province'=>$post['province'],
             'vehicle'=>$post['vehicle'],
-            'vehicle_cost'=>500000,
-            'vehicle_cost_destination'=>300000,
+            'vehicle_cost'=>$post['regional']=="Dalam Negri" ? 500000 : 0,
+            'vehicle_cost_destination'=>$post['regional']=="Dalam Negri" ? 300000 : 0,
             'start_date'=>$start_date,
             'group_grade'=>$post['group_grade'],
             'end_date'=>$end_date,
             'jenis_spj'=>($post['jenis_perjalanan_dinas']=='daily_money') ? 'Dinas' : 'Diklat'
         ];
         $listFollower = $post['listFollower'];
-        if(count($listFollower) > 0){
+        if($listFollower){
             
             foreach ($listFollower as $k => $follower) {
                 $check_kriteria_follower     = $this->checkFrequensiSPJ($follower['employeeid'],$start_date,$end_date);
                 $reprentasi_money_follower   = $this->getRepresentasiMoney($follower['id_group_grade'],$check_kriteria_requester['kriteria']);
-                
+                $daily_money_follower       = $this->getDailyMoney($post['destination_name'],$post['jenis_perjalanan_dinas'],$post['regional'],$follower['id_group_grade'],$post['pengurusan']);
                 $getHeadofDivisionNameFollower = $this->db->where('division_name','EPC')->get('view_master_division')->row_array();
                 $get_hotel_cost               = $this->getHotelCost($follower['id_group_grade'],$post['province']);
                 $data_requester[] = [
@@ -500,12 +525,12 @@ class SPJ extends CI_Controller
                     'destination_name'=>$post['destination_name'],
                     'days'=>$check_kriteria_follower['days'],
                     'group_grade'=>$follower['group_grade'],
-                    'reprentasi_money'=>$reprentasi_money_follower,
+                    'reprentasi_money'=>$post['regional']=="Dalam Negri" ? $reprentasi_money_follower : 0,
                     'province'=>$post['province'],
-                    'daily_money'=>$daily_money_requester,
-                    'hotel_cost'=>$get_hotel_cost,
+                    'daily_money'=>$daily_money_follower,
+                    'hotel_cost'=>$post['regional']=="Dalam Negri" ? $get_hotel_cost : 0,
                     'vehicle'=>$post['vehicle'],
-                    'vehicle_cost'=>500000,
+                    'vehicle_cost'=>$post['regional']=="Dalam Negri" ? 500000 : 0,
                     'vehicle_cost_destination'=>0,
                     'start_date'=>$start_date,
                     'end_date'=>$end_date,
@@ -516,7 +541,7 @@ class SPJ extends CI_Controller
         $return['data_requester'] = $data_requester;
         $return['spj_doc_number'] = $spj_doc_number;
         $return['start_date'] = $start_date;
-
+        #json_exit($return);
         return $return;
     }
     
@@ -527,7 +552,7 @@ class SPJ extends CI_Controller
 
             $do_calculation = $this->generateCalculation($post);
 
-            $html_document = $this->generateDocumentSPJ($do_calculation['spj_doc_number'],$do_calculation['data_requester'],$do_calculation['start_date']);
+            $html_document = $this->generateDocumentSPJ($do_calculation['spj_doc_number'],$do_calculation['data_requester'],$do_calculation['start_date'],$post['regional']);
             $return['html'] = $html_document;
             //$data_req_spj = array_merge($data_requester,$data_follower);
             // echo $reprentasi_money;
@@ -535,7 +560,7 @@ class SPJ extends CI_Controller
         }
     }
 
-    private function generateDocumentSPJ( $spj_doc_number, $data_requester = array(), $start_date ){
+    private function generateDocumentSPJ( $spj_doc_number, $data_requester = array(), $start_date, $regional = 'Dalam Negri' ){
         //debubvar($data_requester);
         $html = '<div class="col-lg-12">
                     <div class="kop_surat">
@@ -564,10 +589,13 @@ class SPJ extends CI_Controller
                                             <td>
                                                 Rp. '.number_format($value['daily_money'] * $value['days'],2,',','.').'
                                             </td>
-                                        </tr>
-                                        <tr>
+                                        </tr>';
+                                    if($regional=="Dalam Negri"){
+
+                                    
+                                        $html .= '<tr>
                                             <td>
-                                                Uang Represntasi <br>
+                                                Uang Representasi <br>
                                                 '.$value['group_grade'].' <br>
                                                 Rp. '.number_format($value['reprentasi_money'],2,',','.').' x '.$value['days'].' <br>
                                             </td>
@@ -594,13 +622,17 @@ class SPJ extends CI_Controller
                                             <td>
                                                 Rp. '.number_format($value['vehicle_cost'] + $value['vehicle_cost_destination'],2,',','.').'
                                             </td>
-                                        </tr>
-                                        <tr>
+                                        </tr>';
+                                        $total_amount =   (($value['reprentasi_money']+$value['daily_money']+$value['hotel_cost']) * $value['days'])+$value['vehicle_cost'] + $value['vehicle_cost_destination'];
+                                    }else{
+                                        $total_amount = $value['daily_money'] * $value['days'];
+                                    }
+                                        $html .='<tr>
                                             <td>
                                                 Jumlah
                                             </td>
                                             <td>
-                                                Rp. '.number_format(($value['reprentasi_money']+$value['daily_money']+$value['hotel_cost']) * $value['days'],2,',','.').'
+                                                Rp. '.number_format($total_amount,2,',','.').'
                                             </td>
                                         </tr>
                                     </tbody>

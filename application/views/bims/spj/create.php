@@ -114,6 +114,15 @@
                                         <div id="detailDestination"></div>
                                     </div>
                                     <div class="form-group">
+                                        <label for="pengurusan">Pengurusan <span class="text-danger">*</span></label>
+                                        <select class="form-control" name="pengurusan" id="pengurusan" required="required">
+                                            <option>Pilih</option>
+                                            <option value="0">Pilih</option>
+                                            <option value="Sendiri">Sendiri</option>
+                                            <option value="Kantor">Kantor</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="activity">Keperluan <span class="text-danger">*</span></label>
                                         <select class="form-control" name="activityid" id="activityid" required="required">
                                             
@@ -249,8 +258,8 @@
                         <input type="hidden" id="division_name" name="division_name" value="'+data.division_name+'">\
                         <input type="hidden" id="department_name" name="department_name" value="'+data.department_name+'">\
                         <input type="hidden" id="department" name="department" value="'+data.department+'">\
-                        <input type="hidden" id="department" name="group_grade" value="'+data.group_grade+'">\
-                        <input type="hidden" id="department" name="id_group_grade" value="'+data.id_group_grade+'">';
+                        <input type="hidden" id="group_grade" name="group_grade" value="'+data.group_grade+'">\
+                        <input type="hidden" id="id_group_grade" name="id_group_grade" value="'+data.id_group_grade+'">';
             return html;
             
         }
@@ -296,8 +305,10 @@
             var text = $(this).select2('data');
             var destination_name = text[0].sub_regional;
             var province = text[0].province;
+            var regional = text[0].regional;
             var html = '<input name="destination_name" value="'+destination_name+'" id="destination_name" type="hidden"/>\
-                        <input name="province" value="'+province+'" id="province" type="hidden"/>';
+                        <input name="province" value="'+province+'" id="province" type="hidden"/>\
+                        <input name="regional" value="'+regional+'" id="regional" type="hidden"/>';
             $('#detailDestination').html(html);
         });
         //END TUJUAN

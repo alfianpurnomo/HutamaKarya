@@ -67,6 +67,105 @@ table {
 }
 </style>
 <div class="book">
+  <div class="col-lg-12">
+        <div class="kop_surat">
+            <h3>PERINCIAN BIAYA PERJALANAN DINAS</h3>
+            <h3>BERDASARKAN SURAT TUGAS</h3>
+            <h3>No. : <?php echo $detailSPJ['spj_doc_no'] ?> Tanggal : <?php echo date('d M Y',strtotime($detailSPJ['start_date'])) ?></h3> 
+        </div>
+        
+  </div>
+
+    <div class="page">
+        <div class="content_document">
+        	<div class="col-lg-12">
+							<p>Diperintahkan kepada :</p>
+							<br/>
+	            <table class="table">
+	                <thead>
+	                    <tr>
+	                        <th class="text-center"> </th>
+	                        <th class="text-center"></th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	                    <tr>
+	                        <td style="width:40%">
+	                            Nama
+	                        </td>
+	                        <td class="">
+															: &nbsp;<?php echo $detailSPJ['employee_requested']; ?>
+	                        </td>
+	                    </tr>
+											<tr>
+	                        <td>
+	                            Jabatan
+	                        </td>
+	                        <td class="">
+													: &nbsp;<?php echo $detailSPJ['jobs_name']; ?>
+	                        </td>
+	                    </tr>
+											<tr>
+	                        <td>
+													Tujuan
+	                        </td>
+	                        <td class="">
+													: &nbsp;<?php echo $detailSPJ['sub_regional'].' - '.$detailSPJ['province']; ?>
+	                        </td>
+	                    </tr>
+											<tr>
+	                        <td>
+													Keperluan
+	                        </td>
+	                        <td class="">
+													: &nbsp;<?php echo $detailSPJ['activity_name']; ?>
+	                        </td>
+	                    </tr>
+											<tr>
+	                        <td>
+													Pengikut
+	                        </td>
+	                        <td class="">
+													: &nbsp;<?php echo $detailSPJ['dataFollower']; ?>
+	                        </td>
+	                    </tr>
+											<tr>
+	                        <td>
+													Berangkat
+	                        </td>
+	                        <td class="">
+													: &nbsp; <?php echo date('d M Y',strtotime($detailSPJ['start_date'])); ?>
+	                        </td>
+	                    </tr>
+											<tr>
+	                        <td>
+													Dengan
+	                        </td>
+	                        <td class="">
+													: &nbsp;<?php echo $detailSPJ['vehicle']; ?>
+	                        </td>
+	                    </tr>
+											
+	                    <tr>
+	                        <td collspan="2">
+													Harap yang berkepentingan menjadi maklum dan memberikan bantuan secukupnya.
+													</td>
+													<td></td>
+	                    </tr>
+	                    
+	                </tbody>
+	            
+	            </table>  
+	        </div>
+					<div class="col-lg-12" >
+							
+					</div>
+	                
+	            </div>
+	        </div>   
+	  </div>
+    
+    
 	<div class="col-lg-12">
         <div class="kop_surat">
             <h3>PERINCIAN BIAYA PERJALANAN DINAS</h3>
@@ -74,7 +173,7 @@ table {
             <h3>No. : <?php echo $detailSPJ['spj_doc_no'] ?> Tanggal : <?php echo date('d M Y',strtotime($detailSPJ['start_date'])) ?></h3> 
         </div>
         
-    </div>
+  </div>
     <?php
     foreach ($detailSPJ['listTravelBill'] as $key => $value) {
     ?>
@@ -165,12 +264,13 @@ table {
 	                </div>
 	            </div>
 	        </div>   
-	    </div>
+	  </div>
     
     <?php
     }
     ?>
 </div>
+
 <script type="text/javascript">
-	window.print();
+	//window.print();
 </script>
