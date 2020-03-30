@@ -68,6 +68,14 @@ class SPJ_model extends CI_Model
     function GetAllData($param = [])
     {
         
+        //echo is_superadmin();
+        if(is_superadmin() || id_auth_group() ){
+            
+        }else{
+            $employeeid = employeeid();
+            $this->db->where('employeeid',$employeeid);
+        }
+        
         if (isset($param['search_value']) && $param['search_value'] != '') {
             $this->db->group_start();
             $i = 0;
@@ -100,7 +108,7 @@ class SPJ_model extends CI_Model
                 ->where('is_delete',0)
                 ->get('view_spj_online')
                 ->result_array();
-        
+        //echo $this->db->last_query();
         return $data;
     }
 
@@ -113,7 +121,12 @@ class SPJ_model extends CI_Model
      */
     function CountAllData($param = [])
     {
-        
+        if(is_superadmin() || id_auth_group() ){
+            
+        }else{
+            $employeeid = employeeid();
+            $this->db->where('employeeid',$employeeid);
+        }
         if (is_array($param) && isset($param['search_value']) && $param['search_value'] != '') {
             $this->db->group_start();
             $i = 0;

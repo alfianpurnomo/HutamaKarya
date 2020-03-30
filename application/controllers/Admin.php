@@ -141,10 +141,10 @@ class Admin extends CI_Controller
         // die();
 
 
-        $this->data['groups']      = $this->Admin_model->GetGroups();
-        $this->data['jobs']        = $this->Admin_model->GetJobs();
-        $this->data['departments']  = $this->Admin_model->GetGroups();
-        $this->data['golongans']   = $this->Admin_model->GetJobs();
+        $this->data['groups']               = $this->Admin_model->GetGroups();
+        $this->data['jobs']                 = $this->Admin_model->GetJobs();
+        $this->data['departments']          = $this->Admin_model->GetDepartment();
+        $this->data['golongans']            = $this->Admin_model->GetGolongan();
         #json_exit($this->data);
         $this->data['page_title']  = 'Add';
         $this->data['form_action'] = site_url($this->class_path_name.'/add');
@@ -326,7 +326,7 @@ class Admin extends CI_Controller
         $this->data['jobs']                 = $this->Admin_model->GetJobs();
         $this->data['departments']          = $this->Admin_model->GetDepartment();
         $this->data['golongans']            = $this->Admin_model->GetGolongan();
-        #json_exit($this->data);
+        //json_exit($this->data);
         $this->data['page_title']         = 'Edit';
         $this->data['form_action']        = site_url($this->class_path_name.'/edit/'.$id);
         $this->data['delete_picture_url'] = site_url($this->class_path_name.'/delete_picture/'.$id);
