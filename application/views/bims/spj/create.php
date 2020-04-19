@@ -116,10 +116,17 @@
                                     <div class="form-group">
                                         <label for="pengurusan">Pengurusan <span class="text-danger">*</span></label>
                                         <select class="form-control" name="pengurusan" id="pengurusan" required="required">
-                                            <option>Pilih</option>
                                             <option value="0">Pilih</option>
                                             <option value="Sendiri">Sendiri</option>
                                             <option value="Kantor">Kantor</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="penginapan">Tempat Menginap <span class="text-danger">*</span></label>
+                                        <select class="form-control" name="penginapan" id="penginapan" required="required">
+                                            <option value="0">Pilih</option>
+                                            <option value="Rumah">Di Rumah</option>
+                                            <option value="Hotel">Hotel</option>
                                         </select>
                                     </div>
                                     <div class="form-group">

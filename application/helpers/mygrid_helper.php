@@ -145,5 +145,6 @@ function paging($total_row, $uri_segment = 3,$id=0)
     $remark = ($sd > 0) ? ("View $n2 - $sd of $total_row") : '';
     return $paging . '<div class="pull-right" style="line-height:32px;margin:22px 8px;">' . $remark . '</div>';
 }
+
 /* End of file xms_helper.php */
 /* Location: ./application/helpers/xms_helper.php */

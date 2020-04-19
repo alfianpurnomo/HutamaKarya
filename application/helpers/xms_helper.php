@@ -1190,6 +1190,35 @@ function file_copy_to_folder($source_file, $destination_folder, $filename)
     return $ret;
 }
 
+function file_copy_to_folderArray($source_file_name,$source_file_tmp_name, $destination_folder, $filename)
+{
+	ini_set("display_errors", "1");
+  	error_reporting(E_ALL);
+// 	
+	// print_r($source_file);
+	//echo $destination_folder;
+    #die();
+    $arrext = explode('.', $source_file_name);
+    $jml = count($arrext) - 1;
+    $ext = $arrext[$jml];
+    $ext = strtolower($ext);
+    $ret = false;
+    if (!is_dir($destination_folder)) {
+        mkdir($destination_folder, 0755);
+
+    }
+	
+    $destination_folder .= $filename.'.'.$ext;
+	// exit($destination_folder);
+    
+    if (@move_uploaded_file($source_file_tmp_name, $destination_folder)) {
+        $ret = $filename.'.'.$ext;
+    }
+    // echo $ret;
+	// die();
+    return $ret;
+}
+
 /**
  * Upload multiple (array) file to destination folder, return array of file name.
  *

@@ -422,34 +422,34 @@ class SPJ extends CI_Controller
         $last_Tno = $this->db
                     #->select('id_spj_online')
                     ->where('is_delete',0)
+                    ->order_by('id_spj_online','desc')
                     ->get('spj_online')
                     ->row_array();
         //echo $this->db->last_query();
         if($last_Tno){
             $row = $last_Tno['spj_doc_no'];
-            /*echo $row;
-            die();*/
+            //echo $row;
+            
             $ttno = array_map('trim', explode('/', $row));
-
+            
             $ttno = array_filter($ttno);
             $ttno = $ttno[1];
-
-            #$ttno = str_replace(, '', $ttno);
-            $ttno = substr($sdt, 0,2);
+            
+            
+            $ttno = substr($ttno, 2);
+            
             $nott = $ttno + 1;
 
             $no_tt = sprintf("%04d", $nott);
         }else{
             $no_tt = sprintf("%04d", 1);
         }
-        // $id_auth_user = id_auth_user();
-        // $trs_no = $sdt.$no_tt.$id_auth_user.date('i').date('s').'/BIMS-AFP/'.romanic_number($month).'/'.date('Y');
         $spj_doc_no = $division_name.'/KM'.$no_tt.'/SPJ/'.romanic_number(date('m',strtotime($start_date))).'/'.date('Y',strtotime($start_date));
         return $spj_doc_no;
 
     }
 
-    private function getHotelCost($golongan_grade,$province){
+    private function getHotelCost($golongan_grade,$province,$pengurusan,$penginapan){
         $get_hotel_cost = $this->db
                             ->where('id_group_grade',$golongan_grade)
                             ->where('LCASE(province)',strtolower($province))
@@ -457,6 +457,9 @@ class SPJ extends CI_Controller
         $amount = 0;
         if($get_hotel_cost){
             $amount = $get_hotel_cost['amount'];
+            if($penginapan=='Rumah'){
+                $amount = round(($get_hotel_cost['amount'] * 0.3),PHP_ROUND_HALF_UP);
+            }
         }
 
         return $amount;
@@ -486,7 +489,7 @@ class SPJ extends CI_Controller
         $daily_money_requester        = $this->getDailyMoney($post['destination_name'],$post['jenis_perjalanan_dinas'],$post['regional'],$post['id_group_grade'],$post['pengurusan']);
         $getHeadofDivisionName        = $this->db->where('division_name','EPC')->get('view_master_division')->row_array();
         $spj_doc_number               = $this->generateSPJDocNumber($post['division_name'],$start_date);
-        $get_hotel_cost               = $this->getHotelCost($post['id_group_grade'],$post['province']);
+        $get_hotel_cost               = $this->getHotelCost($post['id_group_grade'],$post['province'],$post['pengurusan'],$post['penginapan']);
         $get_vehicle_cost             = $this->getVehicleCost($post['vehicle'],$post['province'],$post['regional']);
         //echo $get_vehicle_cost;
         $data_requester[] = [

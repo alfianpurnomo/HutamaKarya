@@ -37,7 +37,7 @@
     }
     .kop_surat {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 35px;
     }
     .footer_doc{
         display: flex;
@@ -67,19 +67,15 @@ table {
 }
 </style>
 <div class="book">
-  <div class="col-lg-12">
-        <div class="kop_surat">
-            <h3>PERINCIAN BIAYA PERJALANAN DINAS</h3>
-            <h3>BERDASARKAN SURAT TUGAS</h3>
-            <h3>No. : <?php echo $detailSPJ['spj_doc_no'] ?> Tanggal : <?php echo date('d M Y',strtotime($detailSPJ['start_date'])) ?></h3> 
+    <div class="page" style="line-height: 23px;">
+				<div class="kop_surat">
+            <h3>SURAT PERINTAH JALAN</h3>
+            <!-- <h3>BERDASARKAN SURAT TUGAS</h3> -->
+            <h3><?php echo $detailSPJ['spj_doc_no'] ?> Tanggal : <?php echo date('d M Y',strtotime($detailSPJ['start_date'])) ?></h3> 
         </div>
-        
-  </div>
-
-    <div class="page">
         <div class="content_document">
         	<div class="col-lg-12">
-							<p>Diperintahkan kepada :</p>
+							<p style="font-size: 14px;">Diperintahkan kepada :</p>
 							<br/>
 	            <table class="table">
 	                <thead>
@@ -147,15 +143,81 @@ table {
 	                    </tr>
 											
 	                    <tr>
-	                        <td collspan="2">
+	                        <td colspan="2">
 													Harap yang berkepentingan menjadi maklum dan memberikan bantuan secukupnya.
 													</td>
-													<td></td>
+													
 	                    </tr>
 	                    
 	                </tbody>
 	            
-	            </table>  
+	            </table> 
+							<div style="padding-left: 50%;">
+								<table class="table">
+										<thead>
+												<tr>
+														<th class="text-center"> </th>
+														<th class="text-center"></th>
+												</tr>
+										</thead>
+										<tbody>
+												<tr>
+														<td style="width:40%">
+																Dikeluarkan di 
+														</td>
+														<td class="">
+																: Jakarta
+														</td>
+												</tr>
+												<tr>
+														<td>
+																Pada tanggal
+														</td>
+														<td class="">
+														: <?php echo date('d M Y',strtotime($detailSPJ['start_date'])) ?>
+														</td>
+												</tr>
+												<tr>
+														<td colspan="2">
+															PT. HUTAMA KARYA (Persero)
+														</td>
+														
+												</tr>
+												<tr>
+														<td colspan="2">
+															Divisi Engineering, Procruitment, dan Consructions
+														</td>
+												</tr>
+												
+												<tr>
+														<td colspan="2">
+														<br></br>
+														<br></br>
+														<br></br>
+														<br></br>
+														
+														</td>
+												</tr>
+												
+												<tr>
+														<td colspan="2">
+														<?php echo $detailSPJ['head_of_division_name'] ?>
+														
+														</td>
+														
+												</tr>
+												<tr>
+														<td colspan="2">
+														<?php echo $detailSPJ['jobs_name_head'] ?>
+														</td>
+														
+												</tr>
+												
+										</tbody>
+								
+								</table>  
+							</div>
+							
 	        </div>
 					<div class="col-lg-12" >
 							
@@ -167,11 +229,7 @@ table {
     
     
 	<div class="col-lg-12">
-        <div class="kop_surat">
-            <h3>PERINCIAN BIAYA PERJALANAN DINAS</h3>
-            <h3>BERDASARKAN SURAT TUGAS</h3>
-            <h3>No. : <?php echo $detailSPJ['spj_doc_no'] ?> Tanggal : <?php echo date('d M Y',strtotime($detailSPJ['start_date'])) ?></h3> 
-        </div>
+        
         
   </div>
     <?php
@@ -179,6 +237,11 @@ table {
     ?>
 
     <div class="page">
+				<div class="kop_surat">
+            <h3>PERINCIAN BIAYA PERJALANAN DINAS</h3>
+            <h3>BERDASARKAN SURAT TUGAS</h3>
+            <h3>No. : <?php echo $detailSPJ['spj_doc_no'] ?> Tanggal : <?php echo date('d M Y',strtotime($detailSPJ['start_date'])) ?></h3> 
+        </div>
         <div class="content_document">
         	<div class="col-lg-12">
 	            <table class="table table-striped table-bordered table-hover">
@@ -245,8 +308,8 @@ table {
 	                    <br>
 	                    <br>
 	                    <br>
-	                    <label style="margin-top: 100px;"><?php echo $value['head_of_division_id'] ?> </label>
-	                    <p>Kepala Divisi</p>
+	                    <label style="margin-top: 100px;"><?php echo $value['head_of_division'] ?> </label>
+	                    <p><?php echo $detailSPJ['jobs_name_head'] ?></p>
 	                </div>
 	                <div class="text-center">
 	                    <p>Jakarta, <?php echo date('d M Y',strtotime($detailSPJ['start_date'])) ?></p>

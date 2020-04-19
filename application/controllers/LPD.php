@@ -35,6 +35,9 @@ class LPD extends CI_Controller
         parent::__construct();
         $this->load->model('LPD_model');
         $this->class_path_name = $this->router->fetch_class();
+        $this->location_upload = $_SERVER['DOCUMENT_ROOT'].'/SPJ_Online_HK/'.strtoupper($this->router->fetch_class()).'S/';
+        // echo base_url();
+        // die();
     }
 
     /**
@@ -46,6 +49,7 @@ class LPD extends CI_Controller
         $this->data['add_url']        = site_url($this->class_path_name.'/create');
         $this->data['url_data']       = site_url($this->class_path_name.'/list_data');
         $this->data['record_perpage'] = SHOW_RECORDS_DEFAULT;
+        
     }
 
     /**
@@ -141,7 +145,8 @@ class LPD extends CI_Controller
             redirect($this->class_path_name);
         }
         $record = $this->LPD_model->GetLPD($id);
-        
+        // debugvar($record);
+        // die();
         if (!$record) {
             redirect($this->class_path_name);
         }
@@ -159,20 +164,31 @@ class LPD extends CI_Controller
             if ($this->validateForm($id)) {
                 $post['modify_date']   = date('Y-m-d H:i:s');
                 $post['id_auth_user']   = id_auth_user();
-                //$this->LPD_model->UpdateRecord($id, $post);
-
+                //echo UPLOAD_DIR;
+                $post_file = $_FILES;
+                $file_attachment = $post_file['file_attachment'];
+                
                 if($post['listActivity']){
                     $detailTravelBill = [];
                     foreach ($post['listActivity'] as $key => $value) {
+                        if($file_attachment['tmp_name'][$key]){
+                            $filename   = 'file_'.url_title($value['detail_activity'], '_', true).md5plus($id);
+                            $picture_db = file_copy_to_folderArray($file_attachment['name'][$key],$file_attachment['tmp_name'][$key], $this->location_upload, $filename);
+                            
+                        }
+                        
                         $detailTravelBill[] = [
                             'id_travel_bill'=>$id,
                             'detail_activity'=>$value['detail_activity'],
                             'check_number'=>$value['check_number'],
                             'amount'=>$value['amount'],
-                            'final_amount'=>$value['amount']
+                            'final_amount'=>$value['amount'],
+                            'file_attachment'=>$picture_db,
                         ];
                     }
                     if($detailTravelBill){
+                        // debugvar($detailTravelBill);
+                        // die();
                         $this->db->insert_batch('detail_travel_bill',$detailTravelBill);
                     }
                 }
@@ -229,6 +245,10 @@ class LPD extends CI_Controller
                             <td>'.$value['detail_activity'].'
                                 <br>
                                 Nomer Kwitansi : '.$value['check_number'].'
+                                <div class="col">
+                                    <label>Upload Bukti Scan Kwitansi</label>
+                                    <input class="form-control" type="file" name="file_attachment['.$key.']">
+                                </div>
                             </td>
                             <td class="text-right">Rp. '.number_format($value['amount'],2,',','.').'</td>
                           </tr>';

@@ -187,10 +187,6 @@
                                 <label>No Kwitansi</label> \
                                 <input class="form-control" type="text" name="'+component_name+'[check_number]">\
                             </div>\
-                            <div class="col"> \
-                                <label>Upload Bukti Scan Kwitansi</label> \
-                                <input class="form-control" type="file" name="'+component_name+'[file_attachment]"> \
-                            </div> \
                             <div  class="col close-location">     \
                                 <span data-id="'+div_id+'" class="deleteActivity">x</span> \
                             </div> \
@@ -204,6 +200,10 @@
             }
         }
 
+        // <div class="col"> \
+        //                         <label>Upload Bukti Scan Kwitansi</label> \
+        //                         <input class="form-control" type="file" name="'+component_name+'[file_attachment]"> \
+        //                     </div> \
         $('#addActivity').click(function(){
             generateActivity(0);
         });
