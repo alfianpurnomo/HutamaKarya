@@ -152,6 +152,15 @@ class SPJ_model extends CI_Model
         return $total_records;
     }
 
+    public function getVPEmail($id_employee){
+        $data = $this->db
+                ->select('b.email')
+                ->where('a.employeeid',$id_employee)
+                ->join('master_employee b','b.employeeid=a.head_sub_division')
+                ->get('master_employee a')->row_array();
+        return $data['email'];
+    }
+
     /**
      * Get admin user detail by id.
      *

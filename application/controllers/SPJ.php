@@ -95,26 +95,14 @@ class SPJ extends CI_Controller
         redirect($this->class_path_name);
     }
 
-    public function sendEmailNotif() {
-        // echo phpinfo();
-        // die();
+    private function sendEmailNotif($html,$to,$to) {
+        
         $this->layout = 'none';
-        // $html  = 'Dear Alfian PUrnomo, <br>
-        //         <p>Click Link below to approve the document</p><br>
-        //         <a href="">Click Here!!!</a>';
-        // //$list_email = implode(',', $email);
-        // $to = 'alfian.pacul@gmail.com';
-        // $subject = 'New Allocation For Production Document Must Approve';
-        // $body = $html;
-        // $headers = "MIME-Version: 1.0" . "\r\n";
-        // $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-        // // More headers
-        // $headers .= 'From: <webmaster@example.com>' . "\r\n";
+        
         $this->load->library('email');
         // mail($to,$subject,$body,$headers);
         $from_email = "alfian.pacul@gmail.com"; 
-        $to_email = "eriskafiqiani@gmail.com"; 
+        $to_email = $to; 
 
         $config = Array(
                'protocol' => 'smtp',
@@ -132,8 +120,10 @@ class SPJ extends CI_Controller
 
         $this->email->from($from_email, 'Alfian Purnomo'); 
         $this->email->to($to_email);
-        $this->email->subject('Test Pengiriman Email'); 
-        $this->email->message('Coba mengirim Email dengan CodeIgniter.'); 
+        $this->email->cc($cc);
+        $this->email->subject('Surat Perjalanan'); 
+        $this->email->message($html); 
+        $this->email->set_mailtype('html');
 
         if($this->email->send()){
                 echo 'Berhasil';
@@ -233,7 +223,20 @@ class SPJ extends CI_Controller
                         
                     }
                 }
-                
+
+                // send email notif
+                    
+                foreach ($do_calculation['data_requester'] as $key => $value) {
+                    $html_email =  $this->generateDocumentEmail($do_calculation['spj_doc_number'],$value,$do_calculation['start_date'],$post['regional']);
+                    $getEmailVP = $this->SPJ_model->getVPEmail($value['employeeid']);
+                    $cc = array('selo.tjahjono@hutamakarya.com');
+                    if($getEmailVP!='selo.tjahjono@hutamakarya.com'){
+                        $cc = array_push($cc,$getEmailVP);
+                    }
+                    
+                    $this->sendEmailNotif($html_email,$to,$cc);
+                }
+                die();
                 // insert to log
                 $data_log = [
                     'id_user'  => $id_auth_user,
@@ -253,6 +256,169 @@ class SPJ extends CI_Controller
         if (isset($this->error)) {
             $this->data['form_message'] = $this->error;
         }
+    }
+
+    
+
+    
+    private function generateDocumentEmail( $spj_doc_number, $value = array(), $start_date, $regional = 'Dalam Negri' ){
+        //debubvar($data_requester);
+        //$html = '';
+        //foreach ($data_requester as $key => $value) {
+            $html = '<div class="col-lg-12">
+                        <div style="text-align: center;margin-bottom: 20px;"  class="kop_surat">
+                            <h3 style="font-size: initial;">PERINCIAN BIAYA PERJALANAN DINAS</h3>
+                            <h3 style="font-size: initial;">BERDASARKAN SURAT TUGAS</h3>
+                            <h3 style="font-size: initial;">No. : '.$spj_doc_number.' Tanggal : '.date('d M Y',strtotime($start_date)).'</h3> 
+                        </div>
+                        
+                    </div>';
+            $html .= $this->generateTabelSPJEmail($value,$regional,$start_date);
+            
+            
+        //}
+
+       return $html; 
+    }
+
+
+    private function generateTabelSPJEmail($value=[],$regional,$start_date){
+        
+        $html ='<div style="display: block;
+                            float: left;
+                            border: 1px solid #ccc;
+                            margin: 10px 0px 30px 0px;
+                            padding: 10px 0px;">
+                <div class="col-lg-12">
+                    <table style="border: 1px solid #D0D0D0;
+                                border-spacing: 0;
+                                border-collapse: collapse;width: 100%;
+                                max-width: 100%;
+                                margin-bottom: 20px;">
+                        <thead>
+                            <tr style="">
+                                <th style="text-align: center;padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;">Uraian Biaya </th>
+                                <th style="text-align: center;padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;">Jumlah Uang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Uang Harian '.$value['jenis_spj'].'<br>
+                                    '.$value['destination_name'].' <br>
+                                    Rp. '.number_format($value['daily_money'],2,',','.').' x '.$value['days'].' <br>
+                                </td>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Rp. '.number_format($value['daily_money'] * $value['days'],2,',','.').'
+                                </td>
+                            </tr>';
+                        if($regional=="Dalam Negri"){
+
+                        
+                            $html .= '<tr>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Uang Representasi <br>
+                                    '.$value['group_grade'].' <br>
+                                    Rp. '.number_format($value['reprentasi_money'],2,',','.').' x '.$value['days'].' <br>
+                                </td>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Rp. '.number_format($value['reprentasi_money'] * $value['days'],2,',','.').'
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Uang Hotel ( Maksimal ) <br>
+                                    '.$value['province'].' <br>
+                                    Rp. '.number_format($value['hotel_cost'],2,',','.').' x '.$value['days'].' <br>
+                                </td>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Rp. '.number_format($value['hotel_cost'] * $value['days'],2,',','.').'
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Uang Transport  <br>
+                                    '.$value['province'].' <br>
+                                    Rp. '.number_format($value['vehicle_cost'] + $value['vehicle_cost_destination'],2,',','.').' <br>
+                                </td>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Rp. '.number_format($value['vehicle_cost'] + $value['vehicle_cost_destination'],2,',','.').'
+                                </td>
+                            </tr>';
+                            $total_amount =   (($value['reprentasi_money']+$value['daily_money']+$value['hotel_cost']) * $value['days'])+$value['vehicle_cost'] + $value['vehicle_cost_destination'];
+                        }else{
+                            $total_amount = $value['daily_money'] * $value['days'];
+                        }
+                            $html .='<tr>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Jumlah
+                                </td>
+                                <td style="padding: 15px 5px;
+                                color: #000000;
+                                vertical-align: middle;
+                                border: 1px solid #000000;line-height:1.4">
+                                    Rp. '.number_format($total_amount,2,',','.').'
+                                </td>
+                            </tr>
+                        </tbody>
+                    
+                    </table> 
+                    <p>Yang bertanda tangan dibawah ini bertanggung jawab sepenuhnya terhadap kebenaran Biaya Perjalanan ini, yang semuanya dilaksanana untuk keperluan Dinas, dan dibuat dalam rangkap 2 (dua).</p>   
+                        </div>
+                        <div style="display: flex;
+                                    flex-direction: row;
+                                    justify-content: space-around;" class="col-lg-12" >
+                            <div class="text-center">
+                            <p>Mengetahui,</p>
+                            <p>Divisi EPC</p>
+                            
+                            <label style="margin-top: 100px;display: block;">'.$value['head_of_division'].' </label>
+                            <p>Executive Vice President</p>
+                        </div>
+                        <div class="text-center">
+                            <p>Jakarta, '.date('d M Y',strtotime($start_date)).'</p>
+                            
+                            <label style="margin-top: 135px;display: block;">'.$value['employee_name'].' </label>
+                            
+                        </div>
+                    </div>
+                </div>';
+    
+    return $html;
+    
     }
 
     public function ajax_get_employee(){
@@ -718,90 +884,7 @@ class SPJ extends CI_Controller
                 </div>';
         foreach ($data_requester as $key => $value) {
             $html .= $this->generateTabelSPJ($value,$regional,$start_date);
-            // $html .='<div class="content_document"><div class="col-lg-12">
-            //                     <table class="table table-striped table-bordered table-hover">
-            //                         <thead>
-            //                             <tr>
-            //                                 <th class="text-center">Uraian Biaya </th>
-            //                                 <th class="text-center">Jumlah Uang</th>
-            //                             </tr>
-            //                         </thead>
-            //                         <tbody>
-            //                             <tr>
-            //                                 <td>
-            //                                     Uang Harian '.$value['jenis_spj'].'<br>
-            //                                     '.$value['destination_name'].' <br>
-            //                                     Rp. '.number_format($value['daily_money'],2,',','.').' x '.$value['days'].' <br>
-            //                                 </td>
-            //                                 <td>
-            //                                     Rp. '.number_format($value['daily_money'] * $value['days'],2,',','.').'
-            //                                 </td>
-            //                             </tr>';
-            //                         if($regional=="Dalam Negri"){
-
-                                    
-            //                             $html .= '<tr>
-            //                                 <td>
-            //                                     Uang Representasi <br>
-            //                                     '.$value['group_grade'].' <br>
-            //                                     Rp. '.number_format($value['reprentasi_money'],2,',','.').' x '.$value['days'].' <br>
-            //                                 </td>
-            //                                 <td>
-            //                                     Rp. '.number_format($value['reprentasi_money'] * $value['days'],2,',','.').'
-            //                                 </td>
-            //                             </tr>
-            //                             <tr>
-            //                                 <td>
-            //                                     Uang Hotel ( Maksimal ) <br>
-            //                                     '.$value['province'].' <br>
-            //                                     Rp. '.number_format($value['hotel_cost'],2,',','.').' x '.$value['days'].' <br>
-            //                                 </td>
-            //                                 <td>
-            //                                     Rp. '.number_format($value['hotel_cost'] * $value['days'],2,',','.').'
-            //                                 </td>
-            //                             </tr>
-            //                             <tr>
-            //                                 <td>
-            //                                     Uang Transport  <br>
-            //                                     '.$value['province'].' <br>
-            //                                     Rp. '.number_format($value['vehicle_cost'] + $value['vehicle_cost_destination'],2,',','.').' <br>
-            //                                 </td>
-            //                                 <td>
-            //                                     Rp. '.number_format($value['vehicle_cost'] + $value['vehicle_cost_destination'],2,',','.').'
-            //                                 </td>
-            //                             </tr>';
-            //                             $total_amount =   (($value['reprentasi_money']+$value['daily_money']+$value['hotel_cost']) * $value['days'])+$value['vehicle_cost'] + $value['vehicle_cost_destination'];
-            //                         }else{
-            //                             $total_amount = $value['daily_money'] * $value['days'];
-            //                         }
-            //                             $html .='<tr>
-            //                                 <td>
-            //                                     Jumlah
-            //                                 </td>
-            //                                 <td>
-            //                                     Rp. '.number_format($total_amount,2,',','.').'
-            //                                 </td>
-            //                             </tr>
-            //                         </tbody>
-                                
-            //                     </table> 
-            //                     <p>Yang bertanda tangan dibawah ini bertanggung jawab sepenuhnya terhadap kebenaran Biaya Perjalanan ini, yang semuanya dilaksanana untuk keperluan Dinas, dan dibuat dalam rangkap 2 (dua).</p>   
-            //                         </div>
-            //                         <div class="col-lg-12 footer_doc" >
-            //                             <div class="text-center">
-            //                             <p>Mengetahui,</p>
-            //                             <p>Divisi EPC</p>
-                                        
-            //                             <label style="margin-top: 100px;">'.$value['head_of_division'].' </label>
-            //                             <p>Executive Vice President</p>
-            //                         </div>
-            //                         <div class="text-center">
-            //                             <p>Jakarta, '.date('d M Y',strtotime($start_date)).'</p>
-                                        
-            //                             <label style="margin-top: 135px;">'.$value['employee_name'].' </label>
-                                        
-            //                         </div>
-            //                     </div></div>';
+            
             
         }
 
