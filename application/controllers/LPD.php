@@ -105,21 +105,21 @@ class LPD extends CI_Controller
             redirect($this->class_path_name);
         }
         $this->data['detailLPD'] = $record;
-        // json_exit($record);
+        //json_exit($record);
     }
 
     public function change_status(){
         $this->layout = 'none';
         if($this->input->post() && $this->input->is_ajax_request()){
             $post = $this->input->post();
-            $this->db->where('id_spj_online',$post['id_spj_online']);
-            $this->db->update('spj_online',['status'=>$post['status']]);
+            $this->db->where('id_travel_bill',$post['id_travel_bill']);
+            $this->db->update('travel_bill',['status'=>$post['status']]);
 
             $data_log_status = [
                 'status'=>$post['status'],
                 'id_auth_user'=>id_auth_user()
             ];
-            $this->db->insert('spj_status_history',$data_log_status);
+            //$this->db->insert('spj_status_history',$data_log_status);
             $data_log = [
                 'id_user'  => $data_log_status['id_auth_user'],
                 'id_group' => id_auth_group(),
@@ -132,6 +132,20 @@ class LPD extends CI_Controller
             json_exit($return);
         }
     }
+
+    public function validation($id = 0){
+        if (!$id) {
+            redirect($this->class_path_name);
+        }
+        $record = $this->LPD_model->GetLPD($id);
+        // debugvar($record);
+        // die();
+        if (!$record) {
+            redirect($this->class_path_name);
+        }
+
+        $this->data['post']     = $record;
+    }
     /**
      * Detail/Edit Page.
      *
@@ -141,6 +155,7 @@ class LPD extends CI_Controller
      */
     public function edit($id = 0)
     {
+        
         if (!$id) {
             redirect($this->class_path_name);
         }

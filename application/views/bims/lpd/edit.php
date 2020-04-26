@@ -101,6 +101,7 @@
                                         <tr>
                                             <td>
                                                 <?php echo $y['detail_activity'] ?> <br>
+                                                
                                                 <?php 
                                                 if($y['detail_activity']=='Uang Harian'){
 
@@ -117,6 +118,11 @@
                                                 }
                                                 echo $description_amount;
                                                 ?> <br>
+                                                <?php
+                                                if($y['file_attachment']){
+                                                    echo '<img src="'.RELATIVE_UPLOAD_DIR_LPD.$y['file_attachment'].'" alt="..." class="img-thumbnail"><br>';
+                                                }
+                                                ?>
                                             </td>
                                             <td class="text-right">
                                                 Rp. <?php echo number_format($y['final_amount'],2,',','.') ?>

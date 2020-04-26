@@ -308,11 +308,11 @@ table {
 	                    <br>
 	                    <br>
 	                    <br>
-	                    <label style="margin-top: 100px;"><?php echo $value['head_of_division'] ?> </label>
-	                    <p><?php echo $detailSPJ['jobs_name_head'] ?></p>
+	                    <label style="margin-top: 100px;"><?php echo $detaiLPD['head_of_division'] ?> </label>
+	                    <p><?php echo $detaiLPD['jobs_name_head'] ?></p>
 	                </div>
 	                <div class="text-center">
-	                    <p>Jakarta, <?php echo date('d M Y',strtotime($detailSPJ['start_date'])) ?></p>
+	                    <p>Jakarta, <?php echo date('d M Y',strtotime($detaiLPD['spj_date'])) ?></p>
 	                    <br>
 	                    <br>
 	                    <br>
@@ -335,5 +335,5 @@ table {
 </div>
 
 <script type="text/javascript">
-	//window.print();
+	window.print();
 </script>

@@ -203,8 +203,8 @@
                                             <p>PT. HUTAMA KARYA (Persero)</p>
                                             <p style=" margin-bottom: 100px;">Divisi Engineering, Procruitment, dan Consructions</p>
 
-                                            <p>SELO TJAHYO</p>
-                                            <p>Kepala Divisi</p>
+                                            <p><?php echo strtoupper($detailSPJ['head_of_division_name']) ?></p>
+                                            <p><?php echo $detailSPJ['jobs_name_head'] ?></p>
                                         </div>
                                     </div>
                                     <div class="footer_document">

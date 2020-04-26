@@ -4,7 +4,7 @@
         <div class="col-md-6 col-sm-6 hidden-xs">
             <br>
             <h3 class="sign animated flipInX"><?php echo $site_setting['app_title'];?></h3>
-            <p class="small animated flipInX">Elevenia Project Manager</p>
+            <p class="small animated flipInX">SPJ Online HK</p>
 
            
 
