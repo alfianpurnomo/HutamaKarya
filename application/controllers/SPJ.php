@@ -95,7 +95,7 @@ class SPJ extends CI_Controller
         redirect($this->class_path_name);
     }
 
-    private function sendEmailNotif($html,$to,$to) {
+    private function sendEmailNotif($html,$to,$cc) {
         
         $this->layout = 'none';
         
@@ -229,14 +229,15 @@ class SPJ extends CI_Controller
                 foreach ($do_calculation['data_requester'] as $key => $value) {
                     $html_email =  $this->generateDocumentEmail($do_calculation['spj_doc_number'],$value,$do_calculation['start_date'],$post['regional']);
                     $getEmailVP = $this->SPJ_model->getVPEmail($value['employeeid']);
-                    $cc = array('selo.tjahjono@hutamakarya.com');
+                    //$cc = array('selo.tjahjono@hutamakarya.com','aprindaprames@gmail.com','novalinahhanawati@gmail.com','khusain.munawir@gmail.com');
+                    $cc = array('aprindaprames@gmail.com','novalinahhanawati@gmail.com',);
                     if($getEmailVP!='selo.tjahjono@hutamakarya.com'){
                         $cc = array_push($cc,$getEmailVP);
                     }
                     
-                    $this->sendEmailNotif($html_email,$to,$cc);
+                    $this->sendEmailNotif($html_email,'khusain.munawir@gmail.com',$cc);
                 }
-                die();
+                //die();
                 // insert to log
                 $data_log = [
                     'id_user'  => $id_auth_user,

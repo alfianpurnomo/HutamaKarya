@@ -30,7 +30,7 @@
         text-align: center;
     }
     .kop_surat h3 {
-        font-size: initial;;
+        font-size: initial;
     }
     .kop_surat {
         text-align: center;
