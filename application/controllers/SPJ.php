@@ -101,7 +101,7 @@ class SPJ extends CI_Controller
         
         $this->load->library('email');
         // mail($to,$subject,$body,$headers);
-        $from_email = "alfian.pacul@gmail.com"; 
+        $from_email = "spd.onlineepc@gmail.com"; 
         $to_email = $to; 
 
         $config = Array(
@@ -110,7 +110,7 @@ class SPJ extends CI_Controller
                'smtp_port' => 587,
                'smtp_crypto'=>'tls',
                'smtp_user' => $from_email,
-               'smtp_pass' => 'Anytimeslow311291',
+               'smtp_pass' => 'hkepc2020',
                'mailtype'  => 'html', 
                'charset'   => 'iso-8859-1'
        );
@@ -229,8 +229,8 @@ class SPJ extends CI_Controller
                 foreach ($do_calculation['data_requester'] as $key => $value) {
                     $html_email =  $this->generateDocumentEmail($do_calculation['spj_doc_number'],$value,$do_calculation['start_date'],$post['regional']);
                     $getEmailVP = $this->SPJ_model->getVPEmail($value['employeeid']);
-                    //$cc = array('selo.tjahjono@hutamakarya.com','aprindaprames@gmail.com','novalinahhanawati@gmail.com','khusain.munawir@gmail.com');
-                    $cc = array('aprindaprames@gmail.com','novalinahhanawati@gmail.com',);
+                    //$cc = array('selo.tjahjono@hutamakarya.com','aprindaprames@gmail.com','novalinahhanawati@gmail.com');
+                    $cc = array('aprindaprames@gmail.com','novalinahhanawati@gmail.com');
                     if($getEmailVP!='selo.tjahjono@hutamakarya.com'){
                         $cc = array_push($cc,$getEmailVP);
                     }
