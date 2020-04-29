@@ -69,7 +69,7 @@ class SPJ_model extends CI_Model
     {
         
         //echo is_superadmin();
-        if(is_superadmin() || id_auth_group() ){
+        if(is_superadmin() || id_auth_group()==2 ){
             
         }else{
             $employeeid = employeeid();
@@ -121,7 +121,7 @@ class SPJ_model extends CI_Model
      */
     function CountAllData($param = [])
     {
-        if(is_superadmin() || id_auth_group() ){
+        if(is_superadmin() || id_auth_group()==2 ){
             
         }else{
             $employeeid = employeeid();

@@ -57,6 +57,12 @@ class LPD_model extends CI_Model
     function GetAllData($param = [])
     {
         
+        if(is_superadmin() || id_auth_group()==2 ){
+            
+        }else{
+            $employeeid = employeeid();
+            $this->db->where('employeeid',$employeeid);
+        }
         if (isset($param['search_value']) && $param['search_value'] != '') {
             $this->db->group_start();
             $i = 0;
@@ -102,7 +108,12 @@ class LPD_model extends CI_Model
      */
     function CountAllData($param = [])
     {
-        
+        if(is_superadmin() || id_auth_group()==2 ){
+            
+        }else{
+            $employeeid = employeeid();
+            $this->db->where('employeeid',$employeeid);
+        }
         if (is_array($param) && isset($param['search_value']) && $param['search_value'] != '') {
             $this->db->group_start();
             $i = 0;
