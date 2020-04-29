@@ -438,7 +438,14 @@
             $('.loading').hide();
         })
         //END CALCULATION
+        $(document).on('click','.deleteFollower',function(){
+        
+        var wrap = $(this).data('wrap');
+        var string_parent = '#'+wrap;
+        //console.log(string_parent);
+        $(string_parent).remove();
 
+    });
 
         
     })
