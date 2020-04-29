@@ -118,7 +118,7 @@ class SPJ extends CI_Controller
         $this->email->initialize($config);
         $this->email->set_newline("\r\n");   
 
-        $this->email->from($from_email, 'Alfian Purnomo'); 
+        $this->email->from($from_email, 'Admin SPJ'); 
         $this->email->to($to_email);
         $this->email->cc($cc);
         $this->email->subject('Surat Perjalanan'); 
