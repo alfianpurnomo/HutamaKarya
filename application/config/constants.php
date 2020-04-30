@@ -95,7 +95,9 @@ define('PATH_ROOT_DOCUMENT', rtrim(str_replace('system', '', BASEPATH), '/').'/'
 define('PATH_CMS', str_replace($_SERVER['DOCUMENT_ROOT'], '', str_replace('\\', '/', FCPATH)));
 define('DOC_ROOT', $_SERVER['DOCUMENT_ROOT'].PATH_ROOT.'/');
 define('UPLOAD_DIR', $_SERVER['DOCUMENT_ROOT'].PATH_ROOT.'uploads/');
+define('UPLOAD_DIR_LPD', $_SERVER['DOCUMENT_ROOT'].PATH_ROOT.'LPDS/');
 define('RELATIVE_UPLOAD_DIR', str_replace($_SERVER['DOCUMENT_ROOT'], '', UPLOAD_DIR));
+define('RELATIVE_UPLOAD_DIR_LPD', str_replace($_SERVER['DOCUMENT_ROOT'], '', UPLOAD_DIR_LPD));
 // image sizing
 define('IMG_MAX_WIDTH', 800);
 define('IMG_MAX_HEIGHT', 600);
