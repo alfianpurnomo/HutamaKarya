@@ -250,8 +250,8 @@ class SPJ_model extends CI_Model
     {
         
         $this->db
-            ->where('id_master_department', $id)
-            ->update('master_department',['is_delete'=>0]);
+            ->where('id_spj_online', $id)
+            ->update('spj_online',['is_delete'=>1]);
         
     }
 

@@ -1066,7 +1066,7 @@ class SPJ extends CI_Controller
                                 $json['error'] = alert_box('You can\'t delete Your own account.', 'danger');
                                 break;
                             } else {
-                                if (is_superadmin()) {
+                                if (is_superadmin() || id_auth_group()==2 ) {
                                     $this->SPJ_model->DeleteRecord($id);
                                     $json['success'] = alert_box('Data has been deleted', 'success');
                                     $this->session->set_flashdata('flash_message', $json['success']);

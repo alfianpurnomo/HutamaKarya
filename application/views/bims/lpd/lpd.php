@@ -33,7 +33,7 @@
 <div class="row">
     <div class="col-md-4 col-md-offset-8 text-right">
         <!-- <a href="<?php echo $add_url; ?>" class="btn btn-primary">Add</a> -->
-        <button type="button" class="btn btn-danger delete-record" id="delete-record">Delete</button>
+        <!-- <button type="button" class="btn btn-danger delete-record" id="delete-record">Delete</button> -->
     </div>
 </div>
 <br/><br/>

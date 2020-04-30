@@ -272,7 +272,7 @@
                     if(result['html']){
                         $('.message_action').html(result['html']);
                     }
-                    windows.reload()
+                    location.reload()
                 }).
                 fail(function(){
                     custom_alert('Error');

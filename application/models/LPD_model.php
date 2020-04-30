@@ -214,8 +214,8 @@ class LPD_model extends CI_Model
     {
         
         $this->db
-            ->where('id_master_department', $id)
-            ->update('master_department',['is_delete'=>0]);
+            ->where('id_travel_bill', $id)
+            ->update('travel_bill',['is_delete'=>1]);
         
     }
 
