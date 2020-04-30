@@ -72,7 +72,7 @@
                           ?> <br>
                           <?php
                           if($y['file_attachment']){
-                              echo '<img src="'.RELATIVE_UPLOAD_DIR_LPD.$y['file_attachment'].'" alt="..." class="img-thumbnail"><br>';
+                              echo '<img src="'.URL_IMAGE_LPD.$y['file_attachment'].'" alt="..." class="img-thumbnail"><br>';
                           }
                           ?>
                       </td>
