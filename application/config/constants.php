@@ -98,7 +98,7 @@ define('UPLOAD_DIR', $_SERVER['DOCUMENT_ROOT'].PATH_ROOT.'uploads/');
 define('UPLOAD_DIR_LPD', $_SERVER['DOCUMENT_ROOT'].PATH_ROOT.'LPDS/');
 define('RELATIVE_UPLOAD_DIR', str_replace($_SERVER['DOCUMENT_ROOT'], '', UPLOAD_DIR));
 define('RELATIVE_UPLOAD_DIR_LPD', str_replace($_SERVER['DOCUMENT_ROOT'], '', UPLOAD_DIR_LPD));
-define('URL_IMAGE_LPD','http://'.$_SERVER['SERVER_ADDR'].RELATIVE_UPLOAD_DIR_LPD);
+define('URL_IMAGE_LPD','http://127.0.0.1/SPJ_Online_HK/LPDS/');
 // echo URL_IMAGE_LPD;
 // image sizing
 define('IMG_MAX_WIDTH', 800);
