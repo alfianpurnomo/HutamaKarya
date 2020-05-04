@@ -154,6 +154,27 @@ class LPD extends CI_Controller
         }
     }
 
+    public function delete_item_lpd(){
+        $this->layout = 'none';
+        if($this->input->post() && $this->input->is_ajax_request()){
+            $post = $this->input->post();
+            $this->db->where('id_detail_travel_bill',$post['id_detail_travel_bill']);
+            $this->db->update('detail_travel_bill',['is_delete'=>1]);
+
+            //$this->db->insert('spj_status_history',$data_log_status);
+            $data_log = [
+                'id_user'  => id_auth_user(),
+                'id_group' => id_auth_group(),
+                'action'   => 'Delete Item LPD',
+                'desc'     => 'Delete Item LPD; ID: '.$post['id_detail_travel_bill'].'; Data: '.json_encode($post),
+            ];
+            insert_to_log($data_log);
+            $return['html'] = alert_box('Success.', 'success');
+            $this->session->set_flashdata('flash_message', alert_box('Success menghapus item.', 'success'));
+            json_exit($return);
+        }
+    }
+
     public function change_status(){
         $this->layout = 'none';
         if($this->input->post() && $this->input->is_ajax_request()){
@@ -170,7 +191,7 @@ class LPD extends CI_Controller
                 'id_user'  => $data_log_status['id_auth_user'],
                 'id_group' => id_auth_group(),
                 'action'   => 'Validation LPD',
-                'desc'     => 'Validation LPD; ID: '.$id.'; Data: '.json_encode($post),
+                'desc'     => 'Validation LPD; ID: '.$post['id_travel_bill'].'; Data: '.json_encode($post),
             ];
             insert_to_log($data_log);
             $return['html'] = alert_box('Success.', 'success');

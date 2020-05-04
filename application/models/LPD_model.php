@@ -156,6 +156,7 @@ class LPD_model extends CI_Model
             
             $data['detailTravelBill'] = $this->db
                                     ->where('id_travel_bill',$data['id_travel_bill'])
+                                    ->where('is_delete',0)
                                     ->get('detail_travel_bill')
                                     ->result_array();
             

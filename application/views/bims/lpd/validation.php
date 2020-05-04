@@ -94,6 +94,7 @@
                           ?>
                           <br>
                           <a data-id="<?php echo $y['id_detail_travel_bill']; ?>" data-desc="<?php echo $y['detail_activity']; ?>" data-amount="<?php echo $y['final_amount']; ?>" data-image="<?php echo $y['file_attachment']; ?>" data-kwitansi="<?php echo $y['check_number']; ?>" class="editDetail btn btn-sm btn-success"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                          <a data-id="<?php echo $y['id_detail_travel_bill']; ?>" class="deleteDetail btn btn-sm btn-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
                           <?php
                           }
                           ?>
@@ -178,7 +179,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Add Tasks</h4>
+        <h4 class="modal-title">Edit</h4>
       </div>
       <div class="modal-body">
         <?php echo form_open($form_action, 'id="form-add-tasks" role="form" enctype="multipart/form-data"'); ?>
@@ -254,7 +255,10 @@
             $('.loading').hide();
         })
         //END CHANGE STATUS
-
+        $('img.post-image').each(function(){
+            var $this = $(this);
+            $this.wrap('<a href="' + $this.attr('src') + '" download />')
+        });
 
         
     });
@@ -285,9 +289,28 @@
         $('#ModalEditDetailLPD').modal('show');
     });
 
-    $(document).on('click','.post-image',function(){
-        console.log($(this).attr('src'));
-    })
+    // $(document).on('click','.post-image',function(){
+    //     console.log($(this).attr('src'));
+    // });
+
+    $(document).on('click','.deleteDetail',function(){
+        if(confirm("Apakah anda yakin untuk menghapus data ini ?")){
+            var id_detail = $(this).data('id');
+            var data = [
+                        {name:'id_detail_travel_bill',value:id_detail}];
+            ajax_post("<?php echo site_url('LPD/delete_item_lpd') ?>",data).
+                done(function(result){
+                    if(result['html']){
+                        $('.message_action').html(result['html']);
+                    }
+                    location.reload()
+                }).
+                fail(function(){
+                    custom_alert('Error');
+                });
+        }
+        
+    });
 
     $(document).on('click','#saveUpdate',function(){
         
