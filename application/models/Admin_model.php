@@ -251,7 +251,7 @@ class Admin_model extends CI_Model
     function GetAdmin($id)
     {
         $data = $this->db
-                ->select('a.*,b.nik as f_nik,b.employeeid,b.jobsid,b.sex,b.department,b.golongan')
+                ->select('a.*,b.nik as f_nik,b.employeeid,b.jobsid,b.sex,b.department,b.golongan,b.head_sub_division')
                 ->where('a.id', $id)
                 ->limit(1)
                 ->join('master_employee b','a.id=b.userid')

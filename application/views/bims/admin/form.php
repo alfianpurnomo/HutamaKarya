@@ -47,6 +47,16 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <label for="head_of_division">Head Of Division <span class="text-danger">*</span></label>
+                                <select class="form-control" name="head_sub_division" id="head_sub_division" required="required">
+                                    <?php foreach ($head_of_divisions as $head_sub_division) : ?>
+                                    <option value="<?php echo $head_sub_division['employeeid']; ?>" <?php echo (isset($post['head_sub_division']) && $head_sub_division['employeeid'] == $post['head_sub_division']) ? 'selected="selected"' : ''; ?>>
+                                        <?php echo $head_sub_division['firstname'].' '.$head_sub_division['lastname']; ?>
+                                    </option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="golongan">Golongan <span class="text-danger">*</span></label>
                                 <select class="form-control" name="golongan" id="golongan" required="required">
                                     <?php foreach ($golongans as $golongan) : ?>
@@ -145,6 +155,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
+        $('#head_sub_division,#jobsid').select2();
         document.querySelector(".number_only").addEventListener("keypress", function (evt) {
             //console.log('asd');
             if (evt.which != 8 && evt.which != 0 && evt.which < 48 || evt.which > 57)

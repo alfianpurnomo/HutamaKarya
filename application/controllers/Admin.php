@@ -145,6 +145,7 @@ class Admin extends CI_Controller
         $this->data['jobs']                 = $this->Admin_model->GetJobs();
         $this->data['departments']          = $this->Admin_model->GetDepartment();
         $this->data['golongans']            = $this->Admin_model->GetGolongan();
+        $this->data['head_of_divisions']     = $this->db->get('view_employee')->result_array();
         #json_exit($this->data);
         $this->data['page_title']  = 'Add';
         $this->data['form_action'] = site_url($this->class_path_name.'/add');
@@ -161,9 +162,10 @@ class Admin extends CI_Controller
                 $post['f_password'] = password_hash($post['f_password'],PASSWORD_DEFAULT);
                 $nik = $post['f_nik'];
                 $jobsid = $post['jobsid'];
-                $department             = $post['department'];
-                $golongan                 = $post['golongan'];
+                $department          = $post['department'];
+                $golongan            = $post['golongan'];
                 $sex                 = $post['sex'];
+                $head_sub_division   = $post['head_sub_division'];
                 // $post['ChannelDistributor_code'] = implode(',',$_POST['ChannelDistributor_code']);
                 unset($post['f_nik']);
                 unset($post['conf_password']);
@@ -171,6 +173,7 @@ class Admin extends CI_Controller
                 unset($post['department']);
                 unset($post['golongan']);
                 unset($post['sex']);
+                unset($post['head_sub_division']);
                 
                 
                 unset($post['employeeid']);
@@ -189,7 +192,8 @@ class Admin extends CI_Controller
                         'handphone'=>$post['f_phone'],
                         'department'=>$department,
                         'golongan'=>$golongan,
-                        'sex'=>$sex
+                        'sex'=>$sex,
+                        'head_sub_division'=>$head_sub_division
                     ];
                     
                     $this->Admin_model->InsertEmployee($data_employee);
@@ -326,6 +330,7 @@ class Admin extends CI_Controller
         $this->data['jobs']                 = $this->Admin_model->GetJobs();
         $this->data['departments']          = $this->Admin_model->GetDepartment();
         $this->data['golongans']            = $this->Admin_model->GetGolongan();
+        $this->data['head_of_divisions']     = $this->db->get('view_employee')->result_array();
         //json_exit($this->data);
         $this->data['page_title']         = 'Edit';
         $this->data['form_action']        = site_url($this->class_path_name.'/edit/'.$id);
@@ -346,6 +351,7 @@ class Admin extends CI_Controller
                 $department             = $post['department'];
                 $golongan                 = $post['golongan'];
                 $sex                 = $post['sex'];
+                $head_sub_division   = $post['head_sub_division'];
                 // $post['ChannelDistributor_code'] = implode(',',$_POST['ChannelDistributor_code']);
                 
                 if (!empty($post['f_password'])) {
@@ -361,7 +367,7 @@ class Admin extends CI_Controller
                 unset($post['jobsid']);
                 unset($post['department']);
                 unset($post['golongan']);
-
+                unset($post['head_sub_division']);
                 // update data
                 // debugvar($post);
                 // die();
@@ -377,7 +383,8 @@ class Admin extends CI_Controller
                         'handphone'=>$post['f_phone'],
                         'department'=>$department,
                         'golongan'=>$golongan,
-                        'sex'=>$sex
+                        'sex'=>$sex,
+                        'head_sub_division'=>$head_sub_division
                     ];
                     $this->Admin_model->UpdateEmployee($employeeid, $data_employee);
                 }
