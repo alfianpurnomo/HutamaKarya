@@ -639,7 +639,7 @@ class SPJ extends CI_Controller
         
         $last_Tno = $this->db
                     #->select('id_spj_online')
-                    ->where('is_delete',0)
+                    #->where('is_delete',0)
                     ->order_by('id_spj_online','desc')
                     ->get('spj_online')
                     ->row_array();

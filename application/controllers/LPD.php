@@ -288,6 +288,15 @@ class LPD extends CI_Controller
                 if($y['detail_activity']=='Uang Harian'){
                     $detail = $record['sub_regional'].' - '. $record['province'].'  <br>';
                 } 
+
+                if($y['detail_activity']=='Uang Harian' || $y['detail_activity']=='Uang Reprentasi'){
+                    $detail_rp = 'Rp. '. number_format($y['amount'],2,',','.').'  x '. $record['days'].'  <br>';
+                    $total_amount = number_format($y['amount'] * $record['days'],2,',','.');
+                }else{
+                    $detail_rp = 'Rp. '. number_format($y['amount'],2,',','.').'  <br>';
+                    $total_amount = number_format($y['amount'],2,',','.');
+                } 
+
                 $html .= '<tr>
                             <td>
                                 '. $y['detail_activity'].'  <br>
@@ -308,7 +317,7 @@ class LPD extends CI_Controller
                                 
                $html .=   '</td>
                             <td class="text-right">
-                                Rp. '. number_format($y['amount'] * $record['days'],2,',','.').' 
+                                Rp. '.$total_amount.' 
                             </td>
                         </tr>';
             
