@@ -23,7 +23,9 @@
     .close-location div{
         text-align: center;
     }
-
+    .fileinput{
+    display:block !important;
+}
 </style>
 <div class="row">
     <div class="col-lg-12">
@@ -120,7 +122,17 @@
                                                 ?> <br>
                                                 <?php
                                                 if($y['file_attachment']){
-                                                    echo '<img src="'.URL_IMAGE_LPD.$y['file_attachment'].'" alt="..." class="img-thumbnail"><br>';
+                                                ?>
+                                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                                    <div class="fileinput-new thumbnail fileinput-upload" style="width: 200px; height: 150px;">
+                                                        <?php if (isset($y['file_attachment']) && $y['file_attachment'] != '' ) : ?>
+                                                            <img src="<?php echo URL_IMAGE_LPD.$y['file_attachment'] ?>" class="post-image" />
+                                                            <!-- <span class="btn btn-danger btn-delete-photo" id="delete-picture" data-id="<?php echo $y['id_detail_travel_bill']; ?>">x</span> -->
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                                <?php
+                                                    
                                                 }
                                                 ?>
                                             </td>

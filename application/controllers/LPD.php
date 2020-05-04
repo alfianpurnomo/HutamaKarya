@@ -81,7 +81,7 @@ class LPD extends CI_Controller
             foreach ($records as $row => $record) {
                 $action = '<a href="'.site_url($this->class_path_name.'/edit/'.$record['id']).'" class="btn btn-sm btn-info"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
                 if(is_superadmin() || id_auth_group()==2){
-                    $action .= '<a href="'.site_url($this->class_path_name.'/validation/'.$record['id']).'" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
+                    $action .= '<a href="'.site_url($this->class_path_name.'/validation/'.$record['id']).'" class="btn btn-sm btn-warning"><i class="fa fa-check-square-o" aria-hidden="true"></i></a>';
                 }
                 $return['data'][$row]['DT_RowId']    = $record['id'];
                 $return['data'][$row]['actions']     = $action;
@@ -110,6 +110,48 @@ class LPD extends CI_Controller
         }
         $this->data['detailLPD'] = $record;
         //json_exit($record);
+    }
+
+    public function ajax_edit_detail(){
+        $this->layout = 'none';
+        if($this->input->post() && $this->input->is_ajax_request()){
+            $post = $this->input->post();
+            $file_kwitansi = $_FILES['file_kwitansi'];
+            $picture_db = isset($post['old_file']) ? $post['old_file'] : null;
+            
+            if($file_kwitansi['tmp_name']){
+                
+                if($post['old_file']){
+                    unlink($this->location_upload.$post['old_file']);
+                }
+                $filename   = 'file_'.url_title($post['detail_activity'], '_', true).md5plus(time());
+                $picture_db = file_copy_to_folderArray($file_kwitansi['name'],$file_kwitansi['tmp_name'], $this->location_upload, $filename);
+            }
+            
+            $data_update = [
+                'detail_activity'=>$post['detail_activity'],
+                'check_number'=>$post['check_number'],
+                'amount'=>$post['amount'],
+                'final_amount'=>$post['amount'],
+                'file_attachment'=>$picture_db
+            ];
+
+            $this->db->where('id_detail_travel_bill',$post['id_detail_travel_bill']);
+            $this->db->update('detail_travel_bill',$data_update);
+
+            $data_log = [
+                'id_user'  => id_auth_user(),
+                'id_group' => id_auth_group(),
+                'action'   => 'Edit Detail LPD',
+                'desc'     => 'Edit Detail LPD; ID: '.$post['id_detail_travel_bill'].'; Data: '.json_encode($post),
+            ];
+            insert_to_log($data_log);
+            //echo 'ads';
+            $return['status'] = 'success';
+            json_exit($return);
+            
+
+        }
     }
 
     public function change_status(){
@@ -250,8 +292,21 @@ class LPD extends CI_Controller
                             <td>
                                 '. $y['detail_activity'].'  <br>
                                 '.$detail.'
-                                Rp. '. number_format($y['amount'],2,',','.').'  x '. $record['days'].'  <br>
-                            </td>
+                                Rp. '. number_format($y['amount'],2,',','.').'  x '. $record['days'].'  <br>';
+                                
+                                if($y['file_attachment']){
+                                
+                               $html .= '<div class="fileinput fileinput-new" data-provides="fileinput">
+                                    <div class="fileinput-new thumbnail fileinput-upload" style="width: 200px; height: 150px;">';
+                                        if (isset($y['file_attachment']) && $y['file_attachment'] != '' ) {
+                                            $html .= '<img src="'.URL_IMAGE_LPD.$y['file_attachment'].'" class="post-image" />';
+                                            
+                                        }
+                                   $html .= '</div>
+                                </div>';
+                                    }
+                                
+               $html .=   '</td>
                             <td class="text-right">
                                 Rp. '. number_format($y['amount'] * $record['days'],2,',','.').' 
                             </td>
@@ -266,7 +321,22 @@ class LPD extends CI_Controller
                                 Nomer Kwitansi : '.$value['check_number'].'
                                 <div class="col">
                                     <label>Upload Bukti Scan Kwitansi</label>
-                                    <input class="form-control" type="file" name="file_attachment['.$key.']">
+                                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                                        <div class="fileinput-new thumbnail fileinput-upload" style="width: 200px; height: 150px;">
+                                            
+                                                <img src="" id="post-image" />
+                                            
+                                        </div>
+                                        <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
+                                        <div>
+                                            <span class="btn btn-success btn-file">
+                                                <span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span>
+                                                <input type="file" name="file_attachment['.$key.']">
+                                            </span>
+                                            <a href="#" class="btn btn-danger fileinput-exists" data-dismiss="fileinput">Remove</a>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             </td>
                             <td class="text-right">Rp. '.number_format($value['amount'],2,',','.').'</td>
