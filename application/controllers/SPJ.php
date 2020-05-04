@@ -75,10 +75,10 @@ class SPJ extends CI_Controller
             $return['recordsFiltered'] = $count_filtered_records;
             $return['data']            = [];
             foreach ($records as $row => $record) {
-                $action = '';
-                if(is_superadmin() || id_auth_group()==2){
+                //$action = '';
+                //if(is_superadmin() || id_auth_group()==2){
                     $action = '<a href="'.site_url($this->class_path_name.'/validation/'.$record['id']).'" class="btn btn-sm btn-warning"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>';
-                }
+                //}
                 $return['data'][$row]['DT_RowId']    = $record['id'];
                 $return['data'][$row]['actions']     = $action;
                 $return['data'][$row]['spj_doc_no']                     = $record['spj_doc_no'];
