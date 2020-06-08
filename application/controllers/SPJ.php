@@ -222,21 +222,28 @@ class SPJ extends CI_Controller
                         }
                         
                     }
+                    // echo $id;
+                    // die();
+                    foreach ($do_calculation['data_requester'] as $key => $value) {
+                        $html_email =  $this->generateDocumentEmail($do_calculation['spj_doc_number'],$value,$do_calculation['start_date'],$post['regional']);
+                        $document_SPJ = $this->generateDocumentEmailSPJ($id);
+                        $getEmailVP = $this->SPJ_model->getVPEmail($value['employeeid']);
+                        //$cc = array('selo.tjahjono@hutamakarya.com','aprindaprames@gmail.com','novalinahhanawati@gmail.com');
+                        $cc = array('aprindaprames@gmail.com','novalinahhanawati@gmail.com');
+                        //$cc = array('alfian.purnomo@elevenia.com');
+                        if($getEmailVP!='selo.tjahjono@hutamakarya.com'){
+                            $cc = array_push($cc,$getEmailVP);
+                        }
+                        $body_email = $document_SPJ.$html_email;
+                        //echo $body_email;
+                        $this->sendEmailNotif($body_email,'khusain.munawir@gmail.com',$cc);
+                        //$this->sendEmailNotif($body_email,'alfian.pacul@gmail.com',$cc);
+                    }
                 }
 
                 // send email notif
-                    
-                foreach ($do_calculation['data_requester'] as $key => $value) {
-                    $html_email =  $this->generateDocumentEmail($do_calculation['spj_doc_number'],$value,$do_calculation['start_date'],$post['regional']);
-                    $getEmailVP = $this->SPJ_model->getVPEmail($value['employeeid']);
-                    //$cc = array('selo.tjahjono@hutamakarya.com','aprindaprames@gmail.com','novalinahhanawati@gmail.com');
-                    $cc = array('aprindaprames@gmail.com','novalinahhanawati@gmail.com');
-                    if($getEmailVP!='selo.tjahjono@hutamakarya.com'){
-                        $cc = array_push($cc,$getEmailVP);
-                    }
-                    
-                    $this->sendEmailNotif($html_email,'khusain.munawir@gmail.com',$cc);
-                }
+                
+                
                 //die();
                 // insert to log
                 $data_log = [
@@ -257,6 +264,106 @@ class SPJ extends CI_Controller
         if (isset($this->error)) {
             $this->data['form_message'] = $this->error;
         }
+    }
+
+    private function generateDocumentEmailSPJ($id){
+        $detailSPJ = $this->SPJ_model->GetSPJ($id);
+        //debugvar($record);
+        $html = '<div>
+                        <div style="margin: 0 auto;">
+                            <h3 style="
+                            text-align: center;
+                            font-size: 15px;
+                            font-weight: 600;
+                        ">
+                                SURAT PERINTAH JALAN
+                            </h3>
+                            <h3 style="text-align: center;
+                            font-size: 15px;">
+                                '. $detailSPJ['spj_doc_no'].'
+                            </h3>
+                        </div>
+                        <div style="
+                        margin: 0 auto;
+                    ">
+                            
+                            <div style="
+                            width: 50%;
+                            margin: 0 auto;
+                            line-height: 1.5;
+                        ">
+                                <p>Diperintahkan kepada: </p>
+                                <div style="display: flex;flex-direction: row;">
+                                    <div style="width:30%;">Nama</div>
+                                    <div style="width:70%">
+                                        : &nbsp;'. $detailSPJ['employee_requested'].'
+                                    </div>
+                                </div>
+                                <div style="display: flex;flex-direction: row;">
+                                    <div style="width:30%;">Jabatan</div>
+                                    <div style="width:70%">
+                                        : &nbsp;'. $detailSPJ['jobs_name'].'
+                                    </div>
+                                </div>
+                                <div style="display: flex;flex-direction: row;">
+                                    <div style="width:30%;">Tujuan</div>
+                                    <div style="width:70%">
+                                        : &nbsp;'. $detailSPJ['sub_regional'].' - '.$detailSPJ['province'].'
+                                    </div>
+                                </div>
+                                <div style="display: flex;flex-direction: row;">
+                                    <div style="width:30%;">Keperluan</div>
+                                    <div style="width:70%">
+                                        : &nbsp;'. $detailSPJ['activity_name'].'
+                                    </div>
+                                </div>
+                                <div style="display: flex;flex-direction: row;">
+                                    <div style="width:30%;">Pengikut</div>
+                                    <div style="width:70%">
+                                        : &nbsp;'. $detailSPJ['dataFollower'].'
+                                    </div>
+                                </div>
+                                <div style="display: flex;flex-direction: row;">
+                                    <div style="width:30%;">Berangkat</div>
+                                    <div style="width:70%">
+                                        : &nbsp; '. date('d M Y',strtotime($detailSPJ['start_date'])).'
+                                    </div>
+                                </div>
+                                <div style="display: flex;flex-direction: row;">
+                                    <div style="width:30%;">Dengan</div>
+                                    <div style="width:70%">
+                                        : &nbsp;'. $detailSPJ['vehicle'].'
+                                    </div>
+                                </div>
+                                <p>Harap yang berkepentingan menjadi maklum dan memberikan bantuan secukupnya.</p>
+                            </div>
+                            
+                            <div style="padding-left: 60%;">
+                                <div style="display: flex;flex-direction: row;">
+                                    <div style="width:30%;">Dikeluarkan di</div>
+                                    <div style="width:70%">
+                                        : &nbsp; Jakarta
+                                    </div>
+                                </div>
+                                <div style="display: flex;flex-direction: row;">
+                                    <div style="width:30%;">Pada tanggal</div>
+                                    <div style="width:70%">
+                                        : &nbsp;'. date('d M Y',strtotime($detailSPJ['end_date'])).'
+                                    </div>
+                                </div>
+                                <p>PT. HUTAMA KARYA (Persero)</p>
+                                <p style=" margin-bottom: 100px;">Divisi Engineering, Procruitment, dan Consructions</p>
+
+                                <p>'. strtoupper($detailSPJ['head_of_division_name']).'</p>
+                                <p>'. $detailSPJ['jobs_name_head'].'</p>
+                            </div>
+                        </div>
+                        <div class="footer_document">
+                            
+                        </div>
+                    </div><br><br>';
+            //echo $html;
+            return $html;
     }
 
     
@@ -399,17 +506,15 @@ class SPJ extends CI_Controller
                     </table> 
                     <p>Yang bertanda tangan dibawah ini bertanggung jawab sepenuhnya terhadap kebenaran Biaya Perjalanan ini, yang semuanya dilaksanana untuk keperluan Dinas, dan dibuat dalam rangkap 2 (dua).</p>   
                         </div>
-                        <div style="display: flex;
-                                    flex-direction: row;
-                                    justify-content: space-around;" class="col-lg-12" >
-                            <div class="text-center">
+                        <div style="display:block;" >
+                            <div style="text-align: center;width: 50%;float: left;">
                             <p>Mengetahui,</p>
                             <p>Divisi EPC</p>
                             
                             <label style="margin-top: 100px;display: block;">'.$value['head_of_division'].' </label>
                             <p>Executive Vice President</p>
                         </div>
-                        <div class="text-center">
+                        <div style="text-align: center;width: 50%;float: left;">
                             <p>Jakarta, '.date('d M Y',strtotime($start_date)).'</p>
                             
                             <label style="margin-top: 135px;display: block;">'.$value['employee_name'].' </label>
