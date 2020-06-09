@@ -231,9 +231,9 @@ class SPJ extends CI_Controller
                         //$cc = array('selo.tjahjono@hutamakarya.com','aprindaprames@gmail.com','novalinahhanawati@gmail.com');
                         $cc = array('aprindaprames@gmail.com','novalinahhanawati@gmail.com');
                         //$cc = array('alfian.purnomo@elevenia.com');
-                        //if($getEmailVP!='selo.tjahjono@hutamakarya.com'){
+                        if($getEmailVP!='selo.tjahjono@hutamakarya.com'){
                             $cc = array_push($cc,$getEmailVP);
-                        //}
+                        }
                         $body_email = $document_SPJ.$html_email;
                         //echo $body_email;
                         $this->sendEmailNotif($body_email,'khusain.munawir@gmail.com',$cc);
